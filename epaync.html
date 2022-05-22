@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Golang | Epay NC</title>
+
+        <!-- add krypton client -->
+        <script
+         kr-public-key="{{.PublicKey}}"
+         kr-post-url-success="/paid"
+         src="{{.EndPoint}}/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js">
+        </script>
+
+        <!-- add google font -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+
+        <!-- add bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <!-- override default apple font -->
+        <style media="screen">
+          input { font-family: 'Roboto' }
+        </style>
+    </head>
+    <body>
+        {{ if not (eq .Response.Status "SUCCESS") }}
+        <p>{{.Response.Answer.errorMessage}}</p>
+        {{ else }}
+        <!-- payment form -->
+        <div class="kr-embedded d-inline-block bg-light rounded p-4 m-4"
+          kr-form-token="{{.Response.Answer.formToken}}">
+          <!-- payment form fields -->
+          <div class="form-group">
+            <label for="">Credit Card</label>
+            <div class="kr-pan form-control"></div>
+          </div>
+          <div class="form-group">
+            <label for="">Expiry</label>
+            <div class="kr-expiry form-control"></div>
+          </div>
+          <div class="form-group">
+            <label for="">Security Code</label>
+            <div class="kr-security-code form-control"></div>
+          </div>
+          <!-- payment form submit button -->
+          <button class="kr-payment-button btn btn-primary"></button>
+          <!-- error zone -->
+          <div class="kr-form-error"></div>
+        </div>
+    {{ end }}
+
+      <!-- add loader -->
+      <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+          KR.button.onClick(function() {
+            var spinner = document.createElement('span');
+            spinner.className = 'spinner-grow spinner-grow-sm ml-2';
+            document.querySelector('.kr-payment-button').appendChild(spinner);
+            return true;
+          });
+        });
+      </script>
+    </body>
+</html>
